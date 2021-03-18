@@ -203,6 +203,10 @@ def get_Mp(Delta, idxSt, Mstar, hr, alpha):
         [0.07, 0.24, 0.36, 0.27, 0.29, 0.25, 0.29]])
     # Constants of A and B in Table 1, Zhang et al. 2018
     
+    uncertainties = np.array([[0.86, 0.53, 0.21, 0.22, 0.14, 0.16, 0.13], 
+          [1.12, 0.63, 0.50, 0.16, 0.17, 0.14, 0.16]])
+    # Uncertainties in Table 1
+    
     if (idxSt < 0) or (idxSt > 6):
         print ("the Stokes number is out of range.")
         return None
@@ -217,6 +221,7 @@ def get_Mp(Delta, idxSt, Mstar, hr, alpha):
     print ("q = {:1.1e} Mj/M*".format(q / Mj_Msun))
     print ("q = {:1.1e} Me/M*".format(q / Me_Msun))    
     print ("Mp = {:1.1e} Mj".format(Mp))
+    print (f"log10(Mp) uncertainty +{uncertainties[0,idxSt]} -{uncertainties[1,idxSt]}")
     return Mp
 
 
