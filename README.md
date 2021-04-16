@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/348195306.svg)](https://zenodo.org/badge/latestdoi/348195306)
+
 # DSHARPVII
 
 This repository contains a tool to find putative planet mass from gap width in mm dust contiuum emission of protoplanetary disks.
