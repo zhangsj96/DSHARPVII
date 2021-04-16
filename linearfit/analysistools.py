@@ -62,7 +62,7 @@ def get_sigmag_DSD1(hr, sigmad):
             return 2
         elif sigmad < 0.04:
             return 3
-        elif sigmad < 0.15:
+        elif sigmad < 0.14:    # modified 2021.4.16
             return 4
         elif sigmad < 0.4:
             return 5
@@ -162,6 +162,8 @@ def get_sigmag_1mm(hr, sigmad):
     """
     idx_DSD1 = get_sigmag_DSD1(hr, sigmad)
     idx_DSD2 = get_sigmag_DSD2(hr, sigmad)
+    if idx_DSD2 < 4:
+        idx_DSD2 = 4
     return (idx_DSD1+idx_DSD2)//2
 
 def get_Mp(Delta, idxSt, Mstar, hr, alpha):
@@ -218,9 +220,9 @@ def get_Mp(Delta, idxSt, Mstar, hr, alpha):
     q = Kprime / (hr**(-0.18) * alpha**(-0.31))
     Mp = q / Mj_Msun * Mstar # jupiter mass
     
-    print ("q = {:1.1e} Mj/M*".format(q / Mj_Msun))
-    print ("q = {:1.1e} Me/M*".format(q / Me_Msun))    
-    print ("Mp = {:1.1e} Mj".format(Mp))
+    print ("q = {:1.2e} Mj/M*".format(q / Mj_Msun))
+    print ("q = {:1.2e} Me/M*".format(q / Me_Msun))    
+    print ("Mp = {:1.2e} Mj".format(Mp))
     print (f"log10(Mp) uncertainty +{uncertainties[0,idxSt]} -{uncertainties[1,idxSt]}")
     return Mp
 
@@ -328,7 +330,7 @@ def BnuJyperBeam(T, Sigma_A, nu=240e9):
 
 def tau_r(rAU, intens, params):
     """
-    intens: intensity in mJy/beam
+    intens: intensity in Jy/beam
     params: [Lstar/Lsun: central star luminosity, 
              phi: the factor accounting for flaring angle, 
              theta_maj: beam major axis FWHM arcsec, 
@@ -340,6 +342,22 @@ def tau_r(rAU, intens, params):
     Sigma_A = getSigma_A(theta_maj, theta_min)
     JyperBeam = BnuJyperBeam(T, Sigma_A, nu)
     oneMinusExpMinusTau = intens / JyperBeam
+    tau = -np.log(1. - oneMinusExpMinusTau)
+    return tau
+
+def tau_r_v2(rAU, intens, params):
+    """
+    intens: intensity in Jy/Sr
+    params: [Lstar/Lsun: central star luminosity, 
+             phi: the factor accounting for flaring angle, 
+             theta_maj: beam major axis FWHM arcsec, 
+             theta_min: beam minor axis FWHM arcsec, 
+             nu:  observation frequency (Hz)]
+    """
+    Lstar_Lsun, phi, theta_maj, theta_min, nu = params
+    T = Tmidr(rAU, Lstar_Lsun, phi)
+    JyperSr = BnuJyperSr(T, nu)
+    oneMinusExpMinusTau = intens / JyperSr
     tau = -np.log(1. - oneMinusExpMinusTau)
     return tau
 
