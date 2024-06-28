@@ -72,7 +72,7 @@ def get_sigmag_DSD1(hr, sigmad):
         #h/r=0.07
         if sigmad < 0.006:
             return 0
-        elif sigmad < 0.1:
+        elif sigmad < 0.01:
             return 1
         elif sigmad < 0.015:
             return 2
